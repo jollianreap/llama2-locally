@@ -15,10 +15,7 @@ class LLaMA:
     @staticmethod
     def create_prompt() -> PromptTemplate:
         _default_prompt: str = """
-        You are an assistant tasked with taking a natural language \
-        query from a user and converting it into a query for a vectorstore. \
-        In this process, you strip out information that is not relevant for \
-        the retrieval task. Here is the user query: {question}"""
+        You are an assistant tasked with getting an answer in natural language. Your task is to answer as shortly as you can.  Here is the user query: {question}"""
 
         prompt: PromptTemplate = PromptTemplate(
             input_variables=['question'],
@@ -30,10 +27,10 @@ class LLaMA:
     def load_model(self, gpu) -> LLMChain:
         """Loads model"""
         callback_manager: CallbackManager = CallbackManager([StreamingStdOutCallbackHandler()])
-        kwargs = {'model_path': MODEL_FILE, 'temperature': 0.5,   'max_tokens': 2000,
+        kwargs = {'model_path': self.model_path, 'temperature': 0.5,   'max_tokens': 2000,
                   'top_p': 1, 'callback_manager': callback_manager, 'verbose': True}
 
-        if gpu:
+        if gpu is True:
             n_gpu_layers = 40
             n_batch = 512
             kwargs['n_gpu_layers'] = n_gpu_layers,
